@@ -20,13 +20,23 @@ namespace ElasticSearch.WebApi.Controllers
             _elasticSearchService = elasticSearchService;
         }
 
+        /// <summary>
+        /// Get user by id
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
             var result = await _elasticSearchService.GetAsync(id, cancellationToken);
             return ProcessResult(result);
         }
 
+        /// <summary>
+        /// Get user list
+        /// </summary>
+        /// <param name="paginationRequest">Pagination request</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetAsync([FromQuery] PaginationRequest paginationRequest, CancellationToken cancellationToken)
         {
@@ -34,6 +44,12 @@ namespace ElasticSearch.WebApi.Controllers
             return ProcessCollectionResult(result);
         }
 
+        /// <summary>
+        /// Search user: FirstName = request.FirstName, LastName like 'request.LastName%', Age >= request.Age
+        /// </summary>
+        /// <param name="userSearchRequest">search request data</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("Search")]
         public async Task<IActionResult> SearchAsync([FromQuery] UserSearchRequestDto userSearchRequest, CancellationToken cancellationToken)
         {
@@ -41,6 +57,11 @@ namespace ElasticSearch.WebApi.Controllers
             return ProcessCollectionResult(result);
         }
 
+        /// <summary>
+        /// Add user
+        /// </summary>
+        /// <param name="userAddDto">Add user data</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] UserAddDto userAddDto, CancellationToken cancellationToken)
         {
@@ -48,6 +69,11 @@ namespace ElasticSearch.WebApi.Controllers
             return ProcessActionResult(result, userAddDto, "added");
         }
 
+        /// <summary>
+        /// Update user
+        /// </summary>
+        /// <param name="userUpdateDto">Update user data</param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
         {
@@ -66,6 +92,11 @@ namespace ElasticSearch.WebApi.Controllers
             return ProcessActionResult(result, userEntity, "updated");
         }
 
+        /// <summary>
+        /// Delete user
+        /// </summary>
+        /// <param name="id">user id</param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync([FromHeader] int id, CancellationToken cancellationToken)
         {
