@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  elasticsearch.webapi:
+    container_name: elasticsearch.webapi
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "kibana"
+    environment:
+      - ElasticConfiguration__Uri=http://elasticsearch:9200
+    networks:
+      - elastic
+  
+  elasticsearch:
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    networks:
+      - elastic
+
+  kibana:
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on:
+      - "elasticsearch"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elastic
